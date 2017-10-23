@@ -98,11 +98,23 @@ def joinFactors(factors):
                     "\nappear in more than one input factor.\n" + 
                     "Input factors: \n" +
                     "\n".join(map(str, factors)))
-
-
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
-
+    joint_cvars = set()
+    joint_uvars = set()
+    for factor in factors:
+        for cvar in factor.conditionedVariables(): joint_cvars.add(cvar)
+        for uvar in factor.unconditionedVariables(): joint_uvars.add(uvar)
+    for uvar in joint_uvars:
+        if uvar in joint_cvars: joint_cvars.remove(uvar)
+    
+    joint_factor = Factor(joint_uvars, joint_cvars, factors[0].variableDomainsDict())
+    for assignment_dict in joint_factor.getAllPossibleAssignmentDicts():
+        p = 1
+        for factor in factors: 
+            p *= factor.getProbability(assignment_dict)
+        joint_factor.setProbability(assignment_dict, p)
+    
+    return joint_factor
 
 def eliminateWithCallTracking(callTrackingList=None):
 
@@ -150,7 +162,6 @@ def eliminateWithCallTracking(callTrackingList=None):
                     "unconditionedVariables: " + str(factor.unconditionedVariables()))
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
 
     return eliminate
 
@@ -205,5 +216,3 @@ def normalize(factor):
                             str(factor))
 
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
-

@@ -218,9 +218,6 @@ def fillObsCPT(bayesNet, gameState):
             return BOTTOM_RIGHT_VAL
         elif housePos == topRightPos:
             return TOP_RIGHT_VAL
-
-#        for quadrant in gameState.getPossibleHouses():
-#            if housePos == quadrant: return quadrant
  
     for housePos in gameState.getPossibleHouses():
         h_quadrant = house_quadrant(housePos)
@@ -265,8 +262,6 @@ def getMostLikelyFoodHousePosition(evidence, bayesNet, eliminationOrder):
     (This should be a very short method.)
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
-
 
 class BayesAgent(game.Agent):
 
@@ -362,14 +357,9 @@ class VPIAgent(BayesAgent):
         *Do not* take into account the "time elapsed" cost of traveling to each
         of the houses---this is calculated elsewhere in the code.
         """
-
         leftExpectedValue = 0
         rightExpectedValue = 0
-
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
-
-        return leftExpectedValue, rightExpectedValue
 
     def getExplorationProbsAndOutcomes(self, evidence):
         unknownVars = [o for o in self.obsVars if o not in evidence]
@@ -429,13 +419,8 @@ class VPIAgent(BayesAgent):
         You can use your implementation of getExplorationProbsAndOutcomes to
         determine the expected value of acting with this extra evidence.
         """
-
         expectedValue = 0
-
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
-
-        return expectedValue
 
     def getAction(self, gameState):
 
