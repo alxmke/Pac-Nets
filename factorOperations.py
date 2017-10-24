@@ -226,3 +226,41 @@ def normalize(factor):
                             str(factor))
 
     "*** YOUR CODE HERE ***"
+    n_cvars = factor.conditionedVariables()
+    n_uvars = set()
+    for uvar in factor.unconditionedVariables():
+        if len(factor.variableDomainsDict()[uvar]) == 1:
+            n_cvars.add(uvar)
+        else:
+            n_uvars.add(uvar)
+    n_factor = Factor(n_uvars, n_cvars, factor.variableDomainsDict())
+
+    p = 0.0
+    for assignment_dict in factor.getAllPossibleAssignmentDicts():
+        p += factor.getProbability(assignment_dict)
+    for assignment_dict in n_factor.getAllPossibleAssignmentDicts():
+        n_factor.setProbability(assignment_dict, factor.getProbability(assignment_dict)/p)
+
+    return n_factor
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
