@@ -223,7 +223,7 @@ def fillObsCPT(bayesNet, gameState):
         h_quadrant = house_quadrant(housePos)
         for obsPos in gameState.getHouseWalls(housePos):
             obsVar = OBS_VAR_TEMPLATE % obsPos
-            obsVarFactor = bn.Factor([obsVar], [FOOD_HOUSE_VAR, GHOST_HOUSE_VAR], bayesNet.variableDomainsDict())
+            obsVarFactor = bn.Factor([obsVar], HOUSE_VARS, bayesNet.variableDomainsDict())
             for assignmentDict in obsVarFactor.getAllPossibleAssignmentDicts():
                 p_red, p_blue, p_none = None, None, None
                 # give this section a little more of a look
@@ -369,6 +369,20 @@ class VPIAgent(BayesAgent):
         leftExpectedValue = 0
         rightExpectedValue = 0
         "*** YOUR CODE HERE ***"
+        CPT = inference.inferenceByVariableElimination(self.bayesNet, HOUSE_VARS, evidence, eliminationOrder)
+
+        left_food = evidence.copy()
+        left_food.update({FOOD_HOUSE_VAR:TOP_LEFT_VAL, GHOST_HOUSE_VAR:TOP_RIGHT_VAL})
+        right_food = evidence.copy()
+        right_food.update({FOOD_HOUSE_VAR:TOP_RIGHT_VAL, GHOST_HOUSE_VAR:TOP_LEFT_VAL})
+
+        leftExpectedValue =(CPT.getProbability(left_food) * WON_GAME_REWARD
+                          + CPT.getProbability(right_food) * GHOST_COLLISION_REWARD)
+        rightExpectedValue =(CPT.getProbability(right_food) * WON_GAME_REWARD
+                           + CPT.getProbability(left_food) * GHOST_COLLISION_REWARD)
+
+        return leftExpectedValue, rightExpectedValue
+
 
     def getExplorationProbsAndOutcomes(self, evidence):
         unknownVars = [o for o in self.obsVars if o not in evidence]
@@ -430,6 +444,9 @@ class VPIAgent(BayesAgent):
         """
         expectedValue = 0
         "*** YOUR CODE HERE ***"
+        for p, e in self.getExplorationProbsAndOutcomes(evidence):
+            expectedValue += p * max(self.computeEnterValues(e, enterEliminationOrder))
+        return expectedValue
 
     def getAction(self, gameState):
 
